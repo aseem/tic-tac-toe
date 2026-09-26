@@ -12,8 +12,8 @@ def test_empty_board_has_no_winner():
 def test_top_row_wins():
     # fmt: off
     board = ["X", "X", "X",
-             None, "O", None,
-             "O", None, None]
+            None, "O", None,
+            "O", None, None]
     # fmt: on
     assert check_winner(board) == "X"
     assert not is_draw(board)
@@ -22,8 +22,8 @@ def test_top_row_wins():
 def test_middle_col_wins():
     # fmt: off
     board = ["X", "O", "X",
-             None, "O", None,
-             "X", "O", None]
+            None, "O", None,
+            "X", "O", None]
     # fmt: on
     assert check_winner(board) == "O"
     assert not is_draw(board)
@@ -32,8 +32,8 @@ def test_middle_col_wins():
 def test_diagonal_wins():
     # fmt: off
     board = ["X", "O", "O",
-             None, "X", None,
-             None, None, "X"]
+            None, "X", None,
+            None, None, "X"]
     # fmt: on
     assert check_winner(board) == "X"
     assert not is_draw(board)
@@ -42,8 +42,8 @@ def test_diagonal_wins():
 def test_full_board_no_winner():
     # fmt: off
     board = ["X", "O", "X",
-             "X", "X", "O",
-             "O", "X", "O"]
+            "X", "X", "O",
+            "O", "X", "O"]
     # fmt: on
     assert check_winner(board) is None
     assert is_draw(board)
@@ -52,8 +52,8 @@ def test_full_board_no_winner():
 def test_partly_filled_no_winner():
     # fmt: off
     board = ["X", None, "O",
-             None, "X", "X",
-             None, None, "O"]
+            None, "X", "X",
+            None, None, "O"]
     # fmt: on
     assert check_winner(board) is None
     assert not is_draw(board)
@@ -62,8 +62,8 @@ def test_partly_filled_no_winner():
 def test_full_board_winner():
     # fmt: off
     board = ["X", "O", "X",
-             "O", "X", "O",
-             "O", "X", "X"]
+            "O", "X", "O",
+            "O", "X", "X"]
     # fmt: on
     assert check_winner(board) == "X"
     assert not is_draw(board)
@@ -72,8 +72,8 @@ def test_full_board_winner():
 def test_cannot_move_after_game_over():
     # fmt: off
     board = ["X", "X", "X",
-             "O", "O", None,
-             None, None, None]
+            "O", "O", None,
+            None, None, None]
     # fmt: on
     with pytest.raises(InvalidMoveError, match="over"):
         apply_move(board, 8)
@@ -98,8 +98,8 @@ def test_second_move_places_O():
 def test_move_taken_square():
     # fmt: off
     board = ["X", "X", "O",
-                "O", "X", None,
-                None, None, None]
+            "O", "X", None,
+            None, None, None]
     # fmt: on
     with pytest.raises(InvalidMoveError, match="taken"):
         apply_move(board, 4)
@@ -116,8 +116,8 @@ def test_move_invalid_positions():
 def test_current_player_O():
     # fmt: off
     board = ["X", "X", "O",
-                "O", "X", None,
-                None, None, None]
+            "O", "X", None,
+            None, None, None]
     # fmt: on
     assert current_player(board) == "O"
 
@@ -125,7 +125,7 @@ def test_current_player_O():
 def test_current_player_X():
     # fmt: off
     board = ["X", "X", "O",
-                "O", None, None,
-                None, None, None]
+            "O", None, None,
+            None, None, None]
     # fmt: on
     assert current_player(board) == "X"

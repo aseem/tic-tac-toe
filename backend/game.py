@@ -1,5 +1,7 @@
 Board = list[str | None]
 
+BOARD_SIZE = 9
+
 # The 8 ways to win: 3 rows, 3 columns, 2 diagonals
 # fmt: off
 WIN_LINES = [
