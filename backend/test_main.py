@@ -33,12 +33,14 @@ def game_id() -> str:
     """Create a fresh game and return its id."""
     return client.post("/games").json()["id"]
 
+
 def play(game_id, *positions):
     """Plays all the moves in *positions and returns the response from the last move."""
-    response = None
-    for p in positions:
+    *setup, last = positions
+    for p in setup:
         response = client.post(f"/games/{game_id}/moves", json={"position": p})
-    return response
+        assert response.status_code == 200, response.json()
+    return client.post(f"/games/{game_id}/moves", json={"position": last})
 
 
 def test_first_move_places_x(game_id):
@@ -50,27 +52,27 @@ def test_first_move_places_x(game_id):
 
 
 def test_game_ending_win_x(game_id):
-    response = play(game_id, 0,1,3,4,6)
+    response = play(game_id, 0, 1, 3, 4, 6)
     data = response.json()
     assert data["winner"] == "X"
-    assert data["is_draw"] == False
+    assert data["is_draw"] is False
     assert data["current_player"] == "O"
 
 
 def test_move_after_game_ending(game_id):
-    response = play(game_id, 0,1,3,4,6,7)
+    response = play(game_id, 0, 1, 3, 4, 6, 7)
     assert response.status_code == 400
     assert response.json()["detail"] == "The game is already over"
 
 
 def test_move_on_taken_square(game_id):
-    response = play(game_id, 0,0)
+    response = play(game_id, 0, 0)
     assert response.status_code == 400
     assert response.json()["detail"] == "The position is already taken"
 
 
 def test_invalid_position(game_id):
-    response = play(game_id, 0,1,-1)
+    response = play(game_id, -1)
     assert response.status_code == 422
 
     response = play(game_id, 9)
@@ -80,12 +82,20 @@ def test_invalid_position(game_id):
 def test_move_on_unknown_game():
     response = play("foo", 0)
     assert response.status_code == 404
+    assert response.json()["detail"] == "Game not found"
 
 
 def test_state_persistence(game_id):
-    play(game_id, 0,1,2,3)
+    play(game_id, 0, 1, 2, 3)
     response = client.get(f"/games/{game_id}")
-    assert response.json()["board"] == ["X","O","X","O",None,None,None,None,None]
-
-
-    
+    assert response.json()["board"] == [
+        "X",
+        "O",
+        "X",
+        "O",
+        None,
+        None,
+        None,
+        None,
+        None,
+    ]
