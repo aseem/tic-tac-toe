@@ -1,3 +1,5 @@
+import Board from "./Board.jsx";
+
 function Status({ winner, isDraw, currentPlayer }) {
   if (winner) {
     return <p>Winner: {winner}</p>;
@@ -5,20 +7,6 @@ function Status({ winner, isDraw, currentPlayer }) {
     return <p>The game ended in a tie!</p>;
   }
   return <p>Current Player: {currentPlayer}</p>;
-}
-
-function Square({ value }) {
-  return <button className="square">{value}</button>;
-}
-
-function Board({ board }) {
-  return (
-    <div className="board">
-      {board.map((value, index) => (
-        <Square key={index} value={value} />
-      ))}
-    </div>
-  );
 }
 
 export default function App() {
