@@ -1,5 +1,7 @@
 function Square({ value }) {
-  return <button className={`square ${value}`}>{value}</button>;
+  return (
+    <button className={value ? `square ${value}` : "square"}>{value}</button>
+  );
 }
 
 export default function Board({ board }) {
