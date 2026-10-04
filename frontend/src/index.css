@@ -17,3 +17,11 @@ body {
   font-weight: bold;
   cursor: pointer;
 }
+
+.X {
+  color: red;
+}
+
+.O {
+  color: blue;
+}
