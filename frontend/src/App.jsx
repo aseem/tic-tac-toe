@@ -1,4 +1,5 @@
 import Board from "./Board.jsx";
+import { useState } from "react";
 
 function Status({ winner, isDraw, currentPlayer }) {
   if (winner) {
@@ -11,16 +12,19 @@ function Status({ winner, isDraw, currentPlayer }) {
 }
 
 export default function App() {
-  // prettier-ignore
-  const board = ["X", "O", null, 
-                null, "X", null, 
-                null, null, "O"];
+  const [board, setBoard] = useState(Array(9).fill(null));
+
+  function handleSquareClick(index) {
+    const newBoard = [...board];
+    newBoard[index] = "X";
+    setBoard(newBoard);
+  }
 
   return (
     <main>
       <h1>Tic-Tac-Toe</h1>
       <Status winner={null} isDraw={false} currentPlayer="O" />
-      <Board board={board} />
+      <Board board={board} onSquareClick={handleSquareClick} />
     </main>
   );
 }
