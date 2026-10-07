@@ -11,6 +11,10 @@ function Status({ winner, isDraw, currentPlayer }) {
   return <p>Current Player: {currentPlayer}</p>;
 }
 
+function NewGame({ onClick }) {
+  return <button onClick={onClick}>New Game</button>;
+}
+
 export default function App() {
   const [board, setBoard] = useState(Array(9).fill(null));
   const currentPlayer =
@@ -27,11 +31,17 @@ export default function App() {
     setBoard(newBoard);
   }
 
+  function handleNewGameClick() {
+    const newBoard = Array(9).fill(null);
+    setBoard(newBoard);
+  }
+
   return (
     <main>
       <h1>Tic-Tac-Toe</h1>
       <Status winner={null} isDraw={false} currentPlayer={currentPlayer} />
       <Board board={board} onSquareClick={handleSquareClick} />
+      <NewGame onClick={handleNewGameClick} />
     </main>
   );
 }
