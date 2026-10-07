@@ -2,7 +2,7 @@ function Square({ value, onClick }) {
   return (
     <button
       className={value ? `square ${value}` : "square"}
-      disabled={value}
+      disabled={value !== null}
       onClick={onClick}
     >
       {value}

@@ -1,6 +1,8 @@
 import Board from "./Board.jsx";
 import { useState } from "react";
 
+const EMPTY_BOARD = Array(9).fill(null);
+
 function Status({ winner, isDraw, currentPlayer }) {
   if (winner) {
     return <p>Winner: {winner}</p>;
@@ -16,15 +18,15 @@ function NewGame({ onClick }) {
 }
 
 export default function App() {
-  const [board, setBoard] = useState(Array(9).fill(null));
+  const [board, setBoard] = useState(EMPTY_BOARD);
   const currentPlayer =
-    board.filter((v) => v == "X").length ===
-    board.filter((v) => v == "O").length
+    board.filter((v) => v === "X").length ===
+    board.filter((v) => v === "O").length
       ? "X"
       : "O";
 
   function handleSquareClick(index) {
-    if (board[index] === "X" || board[index] == "O") return;
+    if (board[index] !== null) return;
 
     const newBoard = [...board];
     newBoard[index] = currentPlayer;
@@ -32,7 +34,7 @@ export default function App() {
   }
 
   function handleNewGameClick() {
-    const newBoard = Array(9).fill(null);
+    const newBoard = EMPTY_BOARD;
     setBoard(newBoard);
   }
 
