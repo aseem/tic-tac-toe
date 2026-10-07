@@ -18,6 +18,10 @@ body {
   cursor: pointer;
 }
 
+.square:disabled {
+  cursor: default;
+}
+
 .X {
   color: red;
 }

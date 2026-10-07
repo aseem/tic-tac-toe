@@ -1,6 +1,10 @@
 function Square({ value, onClick }) {
   return (
-    <button className={value ? `square ${value}` : "square"} onClick={onClick}>
+    <button
+      className={value ? `square ${value}` : "square"}
+      disabled={value}
+      onClick={onClick}
+    >
       {value}
     </button>
   );
