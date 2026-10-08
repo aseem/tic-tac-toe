@@ -22,6 +22,17 @@ export default function App() {
     setGame(data);
   }
 
+  async function handleSquareClick(index) {
+    if (game === null) return;
+    const response = await fetch(`${API_URL}/games/${game.id}/moves`, { 
+      method: "POST",
+      headers: {"Content-Type": "application/json" },
+      body:JSON.stringify({ position: index})
+    });
+    const data = await response.json();
+    setGame(data);
+  }
+
   if (game === null) {
     return (
       <main>
@@ -39,7 +50,7 @@ export default function App() {
         isDraw={game.is_draw}
         currentPlayer={game.current_player}
       />
-      <Board board={game.board} onSquareClick={() => {}} />
+      <Board board={game.board} onSquareClick={handleSquareClick} />
       <button onClick={handleNewGameClick}>New Game</button>
     </main>
   );
