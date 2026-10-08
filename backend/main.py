@@ -2,6 +2,8 @@ import uuid
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from game import (
     BOARD_SIZE,
@@ -14,6 +16,13 @@ from game import (
 )
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Every game lives here, keyed by its id. In-memory only: games are lost
 # whenever the server restarts.

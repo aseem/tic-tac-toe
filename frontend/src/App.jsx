@@ -1,7 +1,7 @@
 import Board from "./Board.jsx";
 import { useState } from "react";
 
-const EMPTY_BOARD = Array(9).fill(null);
+const API_URL = "http://localhost:8000";
 
 function Status({ winner, isDraw, currentPlayer }) {
   if (winner) {
@@ -13,37 +13,34 @@ function Status({ winner, isDraw, currentPlayer }) {
   return <p>Current Player: {currentPlayer}</p>;
 }
 
-function NewGame({ onClick }) {
-  return <button onClick={onClick}>New Game</button>;
-}
-
 export default function App() {
-  const [board, setBoard] = useState(EMPTY_BOARD);
-  const currentPlayer =
-    board.filter((v) => v === "X").length ===
-    board.filter((v) => v === "O").length
-      ? "X"
-      : "O";
+  const [game, setGame] = useState(null);
 
-  function handleSquareClick(index) {
-    if (board[index] !== null) return;
-
-    const newBoard = [...board];
-    newBoard[index] = currentPlayer;
-    setBoard(newBoard);
+  async function handleNewGameClick() {
+    const response = await fetch(`${API_URL}/games`, { method: "POST" });
+    const data = await response.json();
+    setGame(data);
   }
 
-  function handleNewGameClick() {
-    const newBoard = EMPTY_BOARD;
-    setBoard(newBoard);
+  if (game === null) {
+    return (
+      <main>
+        <h1>Tic-Tac-Toe</h1>
+        <button onClick={handleNewGameClick}>New Game</button>
+      </main>
+    );
   }
 
   return (
     <main>
       <h1>Tic-Tac-Toe</h1>
-      <Status winner={null} isDraw={false} currentPlayer={currentPlayer} />
-      <Board board={board} onSquareClick={handleSquareClick} />
-      <NewGame onClick={handleNewGameClick} />
+      <Status
+        winner={game.winner}
+        isDraw={game.is_draw}
+        currentPlayer={game.current_player}
+      />
+      <Board board={game.board} onSquareClick={() => {}} />
+      <button onClick={handleNewGameClick}>New Game</button>
     </main>
   );
 }
