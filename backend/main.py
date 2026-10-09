@@ -1,3 +1,4 @@
+import os
 import uuid
 
 from fastapi import FastAPI, HTTPException
@@ -14,11 +15,14 @@ from game import (
     is_draw,
 )
 
+# Comma-separated list of frontend URLs allowed to call this API.
+ALLOWED_ORIGINS = os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
