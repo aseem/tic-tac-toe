@@ -1,9 +1,8 @@
 import uuid
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
-
+from pydantic import BaseModel, Field
 
 from game import (
     BOARD_SIZE,
