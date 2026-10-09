@@ -1,8 +1,8 @@
-function Square({ value, onClick }) {
+function Square({ value, onClick, disabled }) {
   return (
     <button
       className={value ? `square ${value}` : "square"}
-      disabled={value !== null}
+      disabled={value !== null || disabled}
       onClick={onClick}
     >
       {value}
@@ -10,13 +10,14 @@ function Square({ value, onClick }) {
   );
 }
 
-export default function Board({ board, onSquareClick }) {
+export default function Board({ board, onSquareClick, gameOver }) {
   return (
     <div className="board">
       {board.map((value, index) => (
         <Square
           key={index}
           value={value}
+          disabled={gameOver}
           onClick={() => onSquareClick(index)}
         />
       ))}

@@ -73,7 +73,11 @@ export default function App() {
         isDraw={game.is_draw}
         currentPlayer={game.current_player}
       />
-      <Board board={game.board} onSquareClick={handleSquareClick} />
+      <Board
+        board={game.board}
+        onSquareClick={handleSquareClick}
+        gameOver={game.winner || game.is_draw}
+      />
       <button onClick={handleNewGameClick}>New Game</button>
       <ErrorMessage msg={errorMsg} />
     </main>
