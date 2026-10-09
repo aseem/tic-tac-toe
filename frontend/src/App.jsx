@@ -44,7 +44,7 @@ export default function App() {
   }
 
   async function handleNewGameClick() {
-    await sendRequest(`/games`, { method: "POST" });
+    await sendRequest("/games", { method: "POST" });
   }
 
   async function handleSquareClick(index) {
@@ -76,7 +76,7 @@ export default function App() {
       <Board
         board={game.board}
         onSquareClick={handleSquareClick}
-        gameOver={game.winner || game.is_draw}
+        gameOver={game.winner !== null || game.is_draw}
       />
       <button onClick={handleNewGameClick}>New Game</button>
       <ErrorMessage msg={errorMsg} />

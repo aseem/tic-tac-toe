@@ -2,7 +2,7 @@ function Square({ value, onClick, disabled }) {
   return (
     <button
       className={value ? `square ${value}` : "square"}
-      disabled={value !== null || disabled}
+      disabled={disabled}
       onClick={onClick}
     >
       {value}
@@ -17,7 +17,7 @@ export default function Board({ board, onSquareClick, gameOver }) {
         <Square
           key={index}
           value={value}
-          disabled={gameOver}
+          disabled={gameOver || value !== null}
           onClick={() => onSquareClick(index)}
         />
       ))}
