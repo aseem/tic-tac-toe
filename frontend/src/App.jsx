@@ -13,8 +13,16 @@ function Status({ winner, isDraw, currentPlayer }) {
   return <p>Current Player: {currentPlayer}</p>;
 }
 
+function ErrorMessage({msg}) {
+  if (msg) {
+    return <p>Error: {msg}</p>
+  }
+  return <p></p>
+}
+
 export default function App() {
   const [game, setGame] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   async function handleNewGameClick() {
     const response = await fetch(`${API_URL}/games`, { method: "POST" });
@@ -29,8 +37,14 @@ export default function App() {
       headers: {"Content-Type": "application/json" },
       body:JSON.stringify({ position: index})
     });
-    const data = await response.json();
-    setGame(data);
+    if (response.ok) {
+      const data = await response.json();
+      setGame(data);
+    }
+    else {
+      const data = await response.json();
+      setErrorMsg(data.detail)
+    }
   }
 
   if (game === null) {
@@ -52,6 +66,7 @@ export default function App() {
       />
       <Board board={game.board} onSquareClick={handleSquareClick} />
       <button onClick={handleNewGameClick}>New Game</button>
+      <ErrorMessage msg={errorMsg} />
     </main>
   );
 }
