@@ -13,38 +13,46 @@ function Status({ winner, isDraw, currentPlayer }) {
   return <p>Current Player: {currentPlayer}</p>;
 }
 
-function ErrorMessage({msg}) {
+function ErrorMessage({ msg }) {
   if (msg) {
-    return <p>Error: {msg}</p>
+    return <p>Error: {msg}</p>;
   }
-  return <p></p>
+  return null;
 }
 
 export default function App() {
   const [game, setGame] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
+  async function sendRequest(path, options) {
+    try {
+      const response = await fetch(`${API_URL}${path}`, options);
+      const data = await response.json();
+      if (response.ok) {
+        setGame(data);
+        setErrorMsg(null);
+      } else {
+        setErrorMsg(
+          typeof data.detail === "string"
+            ? data.detail
+            : "Something went wrong",
+        );
+      }
+    } catch {
+      setErrorMsg("Something went wrong talking to the server.");
+    }
+  }
+
   async function handleNewGameClick() {
-    const response = await fetch(`${API_URL}/games`, { method: "POST" });
-    const data = await response.json();
-    setGame(data);
+    await sendRequest(`/games`, { method: "POST" });
   }
 
   async function handleSquareClick(index) {
-    if (game === null) return;
-    const response = await fetch(`${API_URL}/games/${game.id}/moves`, { 
+    await sendRequest(`/games/${game.id}/moves`, {
       method: "POST",
-      headers: {"Content-Type": "application/json" },
-      body:JSON.stringify({ position: index})
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ position: index }),
     });
-    if (response.ok) {
-      const data = await response.json();
-      setGame(data);
-    }
-    else {
-      const data = await response.json();
-      setErrorMsg(data.detail)
-    }
   }
 
   if (game === null) {
@@ -52,6 +60,7 @@ export default function App() {
       <main>
         <h1>Tic-Tac-Toe</h1>
         <button onClick={handleNewGameClick}>New Game</button>
+        <ErrorMessage msg={errorMsg} />
       </main>
     );
   }

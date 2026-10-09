@@ -2,6 +2,7 @@ body {
   font-family: system-ui, sans-serif;
   display: flex;
   justify-content: center;
+  background-color: darkgray;
 }
 
 .board {
