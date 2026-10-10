@@ -32,7 +32,7 @@ export default function App() {
         setGame(data);
         setErrorMsg(null);
       } else if (response.status === 404) {
-        setErrorMsg("That game has exprired.  Start a new one!");
+        setErrorMsg("That game has expired. Start a new one!");
         setGame(null);
       } else {
         setErrorMsg(
