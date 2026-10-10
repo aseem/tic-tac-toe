@@ -9,3 +9,6 @@ dist/
 # Secrets / OS junk
 .env
 .DS_Store
+
+# Database
+*.db

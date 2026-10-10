@@ -1,10 +1,12 @@
 import os
-import uuid
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from sqlmodel import Session
 
+from db import Game, SessionDep, create_tables
 from game import (
     BOARD_SIZE,
     Board,
@@ -18,7 +20,14 @@ from game import (
 # Comma-separated list of frontend URLs allowed to call this API.
 ALLOWED_ORIGINS = os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_tables()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,10 +35,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Every game lives here, keyed by its id. In-memory only: games are lost
-# whenever the server restarts.
-games: dict[str, Board] = {}
 
 
 class GameState(BaseModel):
@@ -44,21 +49,21 @@ class MoveRequest(BaseModel):
     position: int = Field(ge=0, lt=BOARD_SIZE)
 
 
-def to_game_state(game_id: str, board: Board) -> GameState:
-    """Package a board with everything the frontend needs to display it."""
+def to_game_state(game: Game) -> GameState:
     return GameState(
-        id=game_id,
-        board=board,
-        current_player=current_player(board),
-        winner=check_winner(board),
-        is_draw=is_draw(board),
+        id=game.id,
+        board=game.board,
+        current_player=current_player(game.board),
+        winner=check_winner(game.board),
+        is_draw=is_draw(game.board),
     )
 
 
-def get_board_or_404(game_id: str) -> Board:
-    if game_id not in games:
+def get_game_or_404(session: Session, game_id: str) -> Game:
+    game = session.get(Game, game_id)
+    if game is None:
         raise HTTPException(status_code=404, detail="Game not found")
-    return games[game_id]
+    return game
 
 
 @app.get("/health")
@@ -67,25 +72,28 @@ def health():
 
 
 @app.post("/games", status_code=201)
-def create_game() -> GameState:
-    game_id = str(uuid.uuid4())
-    games[game_id] = [None] * BOARD_SIZE
-    return to_game_state(game_id, games[game_id])
+def create_game(session: SessionDep) -> GameState:
+    game = Game(board=[None] * BOARD_SIZE)
+    session.add(game)
+    session.commit()
+    session.refresh(game)
+    return to_game_state(game)
 
 
 @app.get("/games/{game_id}")
-def get_game(game_id: str) -> GameState:
-    board = get_board_or_404(game_id)
-    return to_game_state(game_id, board)
+def get_game(game_id: str, session: SessionDep) -> GameState:
+    game = get_game_or_404(session, game_id)
+    return to_game_state(game)
 
 
 @app.post("/games/{game_id}/moves")
-def make_move(game_id: str, move: MoveRequest) -> GameState:
-    board = get_board_or_404(game_id)
+def make_move(game_id: str, move: MoveRequest, session: SessionDep) -> GameState:
+    game = get_game_or_404(session, game_id)
     try:
-        new_board = apply_move(board, move.position)
+        new_board = apply_move(game.board, move.position)
     except InvalidMoveError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
 
-    games[game_id] = new_board
-    return to_game_state(game_id, new_board)
+    game.board = new_board
+    session.commit()
+    return to_game_state(game)
