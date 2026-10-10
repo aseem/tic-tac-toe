@@ -31,6 +31,9 @@ export default function App() {
       if (response.ok) {
         setGame(data);
         setErrorMsg(null);
+      } else if (response.status === 404) {
+        setErrorMsg("That game has exprired.  Start a new one!");
+        setGame(null);
       } else {
         setErrorMsg(
           typeof data.detail === "string"
