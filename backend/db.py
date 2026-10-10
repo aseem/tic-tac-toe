@@ -10,7 +10,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///games.db")
 
 # SQLite needs this setting to work with FastAPI's threads; other databases reject it.
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
-engine = create_engine(DATABASE_URL, connect_args=connect_args)
+engine = create_engine(DATABASE_URL, connect_args=connect_args, pool_pre_ping=True)
 
 
 class Game(SQLModel, table=True):
