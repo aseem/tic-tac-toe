@@ -62,7 +62,9 @@ export default function App() {
     return (
       <main className="card">
         <h1>Tic-Tac-Toe</h1>
-        <button className="button" onClick={handleNewGameClick}>New Game</button>
+        <button className="button" onClick={handleNewGameClick}>
+          New Game
+        </button>
         <ErrorMessage msg={errorMsg} />
       </main>
     );
@@ -81,7 +83,9 @@ export default function App() {
         onSquareClick={handleSquareClick}
         gameOver={game.winner !== null || game.is_draw}
       />
-      <button className="button" onClick={handleNewGameClick}>New Game</button>
+      <button className="button" onClick={handleNewGameClick}>
+        New Game
+      </button>
       <ErrorMessage msg={errorMsg} />
     </main>
   );

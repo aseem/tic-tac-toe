@@ -11,10 +11,10 @@ ON_RENDER = os.environ.get("RENDER") == "true"
 
 if ON_RENDER and not DATABASE_URL.startswith("postgresql"):
     raise RuntimeError(
-    "DATABASE_URL must be a postgresql:// URL when running on Render "
-    "(SQLite files are wiped on every deploy). Set it to the Postgres "
-    "Internal Database URL in the backend service's Environment settings."
-)
+        "DATABASE_URL must be a postgresql:// URL when running on Render "
+        "(SQLite files are wiped on every deploy). Set it to the Postgres "
+        "Internal Database URL in the backend service's Environment settings."
+    )
 
 
 # SQLite needs this setting to work with FastAPI's threads; other databases reject it.
