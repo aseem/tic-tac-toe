@@ -6,13 +6,16 @@ from fastapi import Depends
 from sqlalchemy import JSON, Column
 from sqlmodel import Field, Session, SQLModel, create_engine
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///games.db")
-RENDER = os.environ.get("RENDER", "false")
+DATABASE_URL = os.environ.get("DATABASE_URL") or "sqlite:///games.db"
+ON_RENDER = os.environ.get("RENDER") == "true"
 
-if RENDER == "true" and not DATABASE_URL.startswith("postgresql"):
+if ON_RENDER and not DATABASE_URL.startswith("postgresql"):
     raise RuntimeError(
-        "ERROR: Postgres URL not found! Backend will not start on render without postgresql db"
-    )
+    "DATABASE_URL must be a postgresql:// URL when running on Render "
+    "(SQLite files are wiped on every deploy). Set it to the Postgres "
+    "Internal Database URL in the backend service's Environment settings."
+)
+
 
 # SQLite needs this setting to work with FastAPI's threads; other databases reject it.
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
