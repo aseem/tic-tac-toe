@@ -5,12 +5,12 @@ const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 function Status({ winner, isDraw, currentPlayer }) {
   if (winner) {
-    return <p>Winner: {winner}</p>;
+    return <p className="status">Winner: {winner}</p>;
   }
   if (isDraw) {
-    return <p>The game ended in a tie!</p>;
+    return <p className="status">The game ended in a tie!</p>;
   }
-  return <p>Current Player: {currentPlayer}</p>;
+  return <p className="status">Current Player: {currentPlayer}</p>;
 }
 
 function ErrorMessage({ msg }) {
@@ -60,16 +60,16 @@ export default function App() {
 
   if (game === null) {
     return (
-      <main>
+      <main className="card">
         <h1>Tic-Tac-Toe</h1>
-        <button onClick={handleNewGameClick}>New Game</button>
+        <button className="button" onClick={handleNewGameClick}>New Game</button>
         <ErrorMessage msg={errorMsg} />
       </main>
     );
   }
 
   return (
-    <main>
+    <main className="card">
       <h1>Tic-Tac-Toe</h1>
       <Status
         winner={game.winner}
@@ -81,7 +81,7 @@ export default function App() {
         onSquareClick={handleSquareClick}
         gameOver={game.winner !== null || game.is_draw}
       />
-      <button onClick={handleNewGameClick}>New Game</button>
+      <button className="button" onClick={handleNewGameClick}>New Game</button>
       <ErrorMessage msg={errorMsg} />
     </main>
   );

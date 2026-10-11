@@ -1,23 +1,125 @@
+/* ---------- Design tokens ---------- */
+:root {
+  color-scheme: light dark;
+
+  /* Color: named by purpose, never by appearance */
+  --color-bg: #f4f1ea;
+  --color-surface: #ffffff;
+  --color-surface-hover: #ebe6dc;
+  --color-border: #ddd6c8;
+  --color-text: #2b2620;
+  --color-text-muted: #6b6257;
+  --color-x: #c2410c;
+  --color-o: #1864ab;
+  --color-focus: #f59f00;
+  --color-danger-bg: #fdecea;
+  --color-danger-text: #a61b1b;
+
+  /* Spacing: a fixed scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Shape and depth */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.08);
+
+  /* Type */
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 2rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1b1a17;
+    --color-surface: #262420;
+    --color-surface-hover: #34312b;
+    --color-border: #3d3a34;
+    --color-text: #ece7de;
+    --color-text-muted: #a69f93;
+    --color-x: #ff8a5c;
+    --color-o: #6cb4ff;
+    --color-danger-bg: #3a1f1f;
+    --color-danger-text: #ffb4b4;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.4);
+  }
+}
+
+/* ---------- Base ---------- */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: system-ui, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+h1 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Components ---------- */
+.card {
   display: flex;
-  justify-content: center;
-  background-color: darkgray;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-8);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.status {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-muted);
 }
 
 .board {
   display: grid;
-  grid-template-columns: repeat(3, 80px);
-  gap: 4px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  width: min(320px, 80vw);
 }
 
 .square {
-  width: 80px;
-  height: 80px;
-  font-size: 2rem;
-  font-weight: bold;
+  aspect-ratio: 1;
+  font-size: clamp(2rem, 10vw, 3rem);
+  font-weight: 800;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   cursor: pointer;
   user-select: none;
+  transition:
+    background-color 120ms ease,
+    transform 120ms ease;
+}
+
+.square:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+}
+
+.square:active:not(:disabled) {
+  transform: scale(0.96);
 }
 
 .square:disabled {
@@ -25,9 +127,42 @@ body {
 }
 
 .X {
-  color: red;
+  color: var(--color-x);
 }
 
 .O {
-  color: blue;
+  color: var(--color-o);
+}
+
+.button {
+  font: inherit;
+  font-weight: 600;
+  padding: var(--space-3) var(--space-6);
+  color: var(--color-surface);
+  background: var(--color-text);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.square:focus-visible,
+.button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Respect users who ask their OS for less motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
 }
