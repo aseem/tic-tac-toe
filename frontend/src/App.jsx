@@ -15,7 +15,11 @@ function Status({ winner, isDraw, currentPlayer }) {
 
 function ErrorMessage({ msg }) {
   if (msg) {
-    return <p>Error: {msg}</p>;
+    return (
+      <p className="alert" role="alert">
+        {msg}
+      </p>
+    );
   }
   return null;
 }
@@ -33,9 +37,9 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [pending, setPending] = useState(null);
 
-  async function sendRequest(actvity, path, options) {
+  async function sendRequest(activity, path, options) {
     try {
-      setPending(actvity);
+      setPending(activity);
       const response = await fetch(`${API_URL}${path}`, options);
       const data = await response.json();
       if (response.ok) {

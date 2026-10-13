@@ -160,6 +160,13 @@ h1 {
   outline-offset: 2px;
 }
 
+.alert {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+}
+
 /* Respect users who ask their OS for less motion */
 @media (prefers-reduced-motion: reduce) {
   * {
