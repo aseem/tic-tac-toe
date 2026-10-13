@@ -10,14 +10,14 @@ function Square({ value, onClick, disabled }) {
   );
 }
 
-export default function Board({ board, onSquareClick, gameOver }) {
+export default function Board({ board, onSquareClick, gameOver, requestPending }) {
   return (
     <div className="board">
       {board.map((value, index) => (
         <Square
           key={index}
           value={value}
-          disabled={gameOver || value !== null}
+          disabled={gameOver || value !== null || requestPending}
           onClick={() => onSquareClick(index)}
         />
       ))}

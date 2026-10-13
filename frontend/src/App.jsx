@@ -23,9 +23,12 @@ function ErrorMessage({ msg }) {
 export default function App() {
   const [game, setGame] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [pending, setPending] = useState(false);
+  const [startPending, setStartPending] = useState(false);
 
   async function sendRequest(path, options) {
     try {
+      setPending(true);
       const response = await fetch(`${API_URL}${path}`, options);
       const data = await response.json();
       if (response.ok) {
@@ -43,11 +46,15 @@ export default function App() {
       }
     } catch {
       setErrorMsg("Something went wrong talking to the server.");
+    } finally {
+      setPending(false);
     }
   }
 
   async function handleNewGameClick() {
+    setStartPending(true);
     await sendRequest("/games", { method: "POST" });
+    setStartPending(false);
   }
 
   async function handleSquareClick(index) {
@@ -82,9 +89,10 @@ export default function App() {
         board={game.board}
         onSquareClick={handleSquareClick}
         gameOver={game.winner !== null || game.is_draw}
+        requestPending={pending}
       />
-      <button className="button" onClick={handleNewGameClick}>
-        New Game
+      <button className="button" disabled={pending} onClick={handleNewGameClick}>
+        {startPending ? "Starting..." : "New Game"}
       </button>
       <ErrorMessage msg={errorMsg} />
     </main>
