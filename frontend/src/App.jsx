@@ -20,15 +20,22 @@ function ErrorMessage({ msg }) {
   return null;
 }
 
+function NewGameButton({ pending, onClick }) {
+  return (
+    <button className="button" disabled={pending !== null} onClick={onClick}>
+      {pending === "start" ? "Starting..." : "New Game"}
+    </button>
+  );
+}
+
 export default function App() {
   const [game, setGame] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [pending, setPending] = useState(false);
-  const [startPending, setStartPending] = useState(false);
+  const [pending, setPending] = useState(null);
 
-  async function sendRequest(path, options) {
+  async function sendRequest(actvity, path, options) {
     try {
-      setPending(true);
+      setPending(actvity);
       const response = await fetch(`${API_URL}${path}`, options);
       const data = await response.json();
       if (response.ok) {
@@ -47,18 +54,16 @@ export default function App() {
     } catch {
       setErrorMsg("Something went wrong talking to the server.");
     } finally {
-      setPending(false);
+      setPending(null);
     }
   }
 
   async function handleNewGameClick() {
-    setStartPending(true);
-    await sendRequest("/games", { method: "POST" });
-    setStartPending(false);
+    await sendRequest("start", "/games", { method: "POST" });
   }
 
   async function handleSquareClick(index) {
-    await sendRequest(`/games/${game.id}/moves`, {
+    await sendRequest("move", `/games/${game.id}/moves`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ position: index }),
@@ -69,9 +74,7 @@ export default function App() {
     return (
       <main className="card">
         <h1>Tic-Tac-Toe</h1>
-        <button className="button" onClick={handleNewGameClick}>
-          New Game
-        </button>
+        <NewGameButton pending={pending} onClick={handleNewGameClick} />
         <ErrorMessage msg={errorMsg} />
       </main>
     );
@@ -88,12 +91,9 @@ export default function App() {
       <Board
         board={game.board}
         onSquareClick={handleSquareClick}
-        gameOver={game.winner !== null || game.is_draw}
-        requestPending={pending}
+        disabled={game.winner !== null || game.is_draw || pending !== null}
       />
-      <button className="button" disabled={pending} onClick={handleNewGameClick}>
-        {startPending ? "Starting..." : "New Game"}
-      </button>
+      <NewGameButton pending={pending} onClick={handleNewGameClick} />
       <ErrorMessage msg={errorMsg} />
     </main>
   );
