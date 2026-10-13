@@ -1,0 +1,8 @@
+#!/bin/sh
+# Runs automatically before every `git commit`. A non-zero exit cancels the commit.
+if ! ./check.sh --check; then
+  echo ""
+  echo "❌ Commit blocked: the checks above failed."
+  echo "   Run ./check.sh to auto-fix, review with git diff, git add, then commit again."
+  exit 1
+fi

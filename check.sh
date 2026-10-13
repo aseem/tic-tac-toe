@@ -1,11 +1,19 @@
 #!/bin/sh
-# Auto-fix lint and formatting issues, then run the tests.
+# Lint, format, and test both apps.
+#   ./check.sh          auto-fix what can be fixed, then run the tests
+#   ./check.sh --check  only report problems, never change files (used by the pre-commit hook)
 set -e   # stop at the first failure
 
+if [ "$1" = "--check" ]; then
+  RUFF_CHECK=""; RUFF_FORMAT="--check"; LINT=""; PRETTIER="--check"
+else
+  RUFF_CHECK="--fix"; RUFF_FORMAT=""; LINT="--fix"; PRETTIER="--write"
+fi
+
 echo "🐍 Backend"
-(cd backend && uv run ruff check --fix . && uv run ruff format . && uv run pytest -q)
+(cd backend && uv run ruff check $RUFF_CHECK . && uv run ruff format $RUFF_FORMAT . && uv run pytest -q)
 
 echo "⚛️  Frontend"
-(cd frontend && npm run lint -- --fix && npx prettier --write src)
+(cd frontend && npm run lint -- $LINT && npx prettier $PRETTIER src)
 
-echo "✅ All checks passed. Review the changes with git diff before committing."
+echo "✅ All checks passed."
