@@ -52,3 +52,28 @@ def apply_move(board: Board, position: int) -> Board:
     new_board = board.copy()
     new_board[position] = current_player(board)
     return new_board
+
+
+def available_moves(board: Board) -> list[int]:
+    """Return the position of all empty squares, in order"""
+
+
+def minimax(board: Board, ai_player: str, depth: int) -> int:
+    """Score `board` from ai_player's point of view, assuming perfect play by both sides.
+
+    Positive means the AI wins, negative means it loses, and 0 means a draw.
+    Faster wins and slower losses score better.
+    """
+    # Base cases: the game is over. Score it.
+
+    # Recursive case: score every possible next board, then pick
+    # the max on the AI's turn or the min on the opponent's turn.
+
+
+def best_move(board: Board) -> int:
+    """Return the best position for the player whose turn it is."""
+    ai_player = current_player(board)
+    return max(
+        available_moves(board),
+        key=lambda position: minimax(apply_move(board, position), ai_player, 1),
+    )
