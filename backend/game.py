@@ -56,6 +56,7 @@ def apply_move(board: Board, position: int) -> Board:
 
 def available_moves(board: Board) -> list[int]:
     """Return the position of all empty squares, in order"""
+    return [index for index, value in enumerate(board) if value is None]
 
 
 def minimax(board: Board, ai_player: str, depth: int) -> int:

@@ -1,6 +1,13 @@
 import pytest
 
-from game import InvalidMoveError, apply_move, check_winner, current_player, is_draw
+from game import (
+    InvalidMoveError,
+    apply_move,
+    available_moves,
+    check_winner,
+    current_player,
+    is_draw,
+)
 
 
 def test_empty_board_has_no_winner():
@@ -129,3 +136,22 @@ def test_current_player_X():
             None, None, None]
     # fmt: on
     assert current_player(board) == "X"
+
+
+def test_available_moves_empty():
+    board = [None] * 9
+    assert available_moves(board) == [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
+
+def test_available_moves_full():
+    board = ["X"] * 9
+    assert available_moves(board) == []
+
+
+def test_available_moves_mixed():
+    # fmt: off
+    board = ["X", None, "O",
+            "X", None, "O",
+            None, None, None]
+    # fmt: on
+    assert available_moves(board) == [1, 4, 6, 7, 8]
